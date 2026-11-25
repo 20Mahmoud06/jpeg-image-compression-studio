@@ -1,8 +1,13 @@
+
 from quantization.quantization import (
     quantize_block,
-    dct_and_quantize_block
+    get_quantization_matrix,
+    dct_and_quantize_block,
+    dequantize_block
 )
 
+
+# Basic Quantization Test
 dct_block = [
     [52.0, 10.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [12.0, 8.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -27,8 +32,35 @@ quantization_matrix = [
 
 result = quantize_block(dct_block, quantization_matrix)
 
+expected_result = [
+    [3, 1, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+]
+assert result == expected_result, "Mismatch between manual calculation and code output"
+
+dequantized = dequantize_block(result, quantization_matrix)
+expected_dequantized = [
+    [48, 11, 0, 0, 0, 0, 0, 0],
+    [12, 12, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+]
+assert dequantized == expected_dequantized, "Mismatch in dequantization"
+
+print("Basic Quantization Result:")
 for row in result:
     print(row)
+
 
 # Test DCT + Quantization
 
@@ -37,9 +69,56 @@ block = [
     for i in range(8)
 ]
 
-result = dct_and_quantize_block(block, quantization_matrix)
+# Y Channel
+result_y = dct_and_quantize_block(block, "Y", quality=50)
 
-print("\nDCT + Quantization Result:")
+print("\nY Channel Result:")
+for row in result_y:
+    print(row)
 
-for row in result:
-    print(row)    
+
+# Cb Channel
+result_cb = dct_and_quantize_block(block, "Cb", quality=50)
+
+print("\nCb Channel Result:")
+for row in result_cb:
+    print(row)
+
+
+# Cr Channel
+result_cr = dct_and_quantize_block(block, "Cr", quality=50)
+
+print("\nCr Channel Result:")
+for row in result_cr:
+    print(row)
+
+
+# Test Quality Factor
+
+print("\nQuality = 50:")
+print(get_quantization_matrix("Y", 50)[0])
+
+print("\nQuality = 25:")
+print(get_quantization_matrix("Y", 25)[0])
+
+print("\nQuality = 100:")
+print(get_quantization_matrix("Y", 100)[0])
+
+
+
+# Test Invalid Inputs
+
+try:
+    get_quantization_matrix("R", 50)
+except ValueError as error:
+    print("\nInvalid Channel:", error)
+
+try:
+    get_quantization_matrix("Y", 0)
+except ValueError as error:
+    print("Invalid Quality:", error)
+
+try:
+    get_quantization_matrix("Y", 101)
+except ValueError as error:
+    print("Invalid Quality:", error)
