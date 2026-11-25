@@ -1,4 +1,4 @@
-from quantization_tables import (
+from quantization.quantization_tables import (
     QCL,
     QCR,
     scale_quantization_table
