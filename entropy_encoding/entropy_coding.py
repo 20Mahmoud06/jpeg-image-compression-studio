@@ -1,5 +1,13 @@
 from collections import Counter
-from huffman_decoding import HuffmanTable
+
+# Support both import styles used in this repository:
+#   * ``import entropy_encoding.entropy_coding`` from the repository root
+#   * ``import entropy_coding`` when the entropy_encoding directory itself is
+#     on sys.path (the existing entropy tests rely on this style).
+if __package__:
+    from .huffman_decoding import HuffmanTable
+else:
+    from huffman_decoding import HuffmanTable
 
 BLOCK_SIZE = 64
 
