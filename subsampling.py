@@ -27,7 +27,14 @@ def downsample_chroma(
         (cb_sub, cr_sub) : Subsampled 2D NumPy arrays
     """
     mode = mode.strip()
-    
+
+    # Reject unknown methods instead of silently falling back to "nearest".
+    if method not in ("average", "nearest"):
+        raise ValueError(
+            f"Unsupported subsampling method '{method}'. "
+            "Choose 'average' or 'nearest'."
+        )
+
     if mode == "4:4:4":
         return cb.copy(), cr.copy()
         
