@@ -129,7 +129,7 @@ Expected result:
 
 ## Importing the compression pipeline
 
-The stable GUI-facing API is the `jpeg_studio.pipeline` package:
+The intended GUI-facing API is the `jpeg_studio.pipeline` package:
 
 ```python
 from jpeg_studio.pipeline import (
@@ -155,7 +155,7 @@ original = load_image("input.png")  # uint8 RGB, shape (H, W, 3)
 result = compress_image(
     original,
     quality=75,
-    subsampling_mode="4:2:0",
+    subsampling_mode="4:2:2",
     subsampling_method="average",
 )
 
@@ -261,7 +261,7 @@ shape `(height, width)` and values clipped to `[0, 255]`.
 - The custom `.jics` format is not a standard JPEG file.
 - `compress_image` requires a non-empty uint8 RGB array.
 - Quality must be an integer from 1 to 100.
-- Supported subsampling modes are `4:4:4`, `4:2:2`, and `4:2:0`; supported
+- Supported subsampling modes are `4:4:4` and `4:2:2`; supported
   methods are `average` and `nearest`.
 - The reconstructed image keeps the original height, width, and three RGB
   channels with dtype `uint8`.
